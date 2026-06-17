@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Krishna Paruchuri · AI Solutions Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #080c10;
+  --bg2: #0e1419;
+  --surface: #141c24;
+  --border: rgba(255,255,255,0.08);
+  --border-glow: rgba(56,189,248,0.22);
+  --text: #dde4ed;
+  --muted: rgba(221,228,237,0.5);
+  --dim: rgba(221,228,237,0.25);
+  --teal: #38bdf8;
+  --teal2: #7dd3fc;
+  --amber: #d4973a;
+  --red: #e05c78;
+  --purple: #8b7cf8;
+  --white: #f0f4f8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; cursor: none; }
+
+/* CURSOR */
+.cursor { position: fixed; width: 10px; height: 10px; background: var(--teal); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.08s, width 0.2s, height 0.2s, background 0.2s; mix-blend-mode: difference; }
+.cursor-ring { position: fixed; width: 36px; height: 36px; border: 1px solid rgba(0,230,180,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.18s cubic-bezier(0.16,1,0.3,1); }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5%; height: 68px;
+  background: rgba(6,10,15,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--white); text-decoration: none; letter-spacing: -0.01em; }
+.nav-logo em { font-style: italic; color: var(--teal); }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 0.75rem; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--teal); }
+.nav-cta { padding: 9px 22px; background: transparent; border: 1px solid var(--teal); color: var(--teal) !important; border-radius: 3px; font-size: 0.72rem !important; letter-spacing: 1.2px; transition: all 0.2s !important; }
+.nav-cta:hover { background: var(--teal) !important; color: var(--bg) !important; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 120px 5% 80px; position: relative; overflow: hidden;
+}
+.hero-bg-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(0,230,180,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,230,180,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.hero-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+}
+.orb1 { width: 500px; height: 500px; top: -100px; right: -100px; background: radial-gradient(circle, rgba(0,191,255,0.12), transparent 65%); }
+.orb2 { width: 400px; height: 400px; bottom: -50px; left: -80px; background: radial-gradient(circle, rgba(0,230,180,0.08), transparent 65%); }
+
+.hero-inner { position: relative; z-index: 2; max-width: 860px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid var(--border-glow); border-radius: 2px;
+  padding: 6px 16px; margin-bottom: 32px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 400;
+  color: var(--teal); letter-spacing: 1.5px; text-transform: uppercase;
+}
+.blink { display: inline-block; width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  color: var(--white); line-height: 1.05; letter-spacing: -0.03em;
+  margin-bottom: 8px;
+}
+.hero h1 em { font-style: italic; color: var(--teal); }
+.hero-mono {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+  color: var(--muted); letter-spacing: 0.05em; margin-bottom: 28px;
+}
+.hero-sub {
+  font-size: 1.05rem; color: var(--muted); max-width: 560px;
+  line-height: 1.85; margin-bottom: 44px; font-weight: 400;
+}
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  padding: 14px 32px; background: var(--teal); color: var(--bg);
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.85rem;
+  letter-spacing: 0.5px; border: none; border-radius: 3px;
+  text-decoration: none; display: inline-block;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 30px rgba(0,230,180,0.25);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(0,230,180,0.4); }
+.btn-outline {
+  padding: 14px 32px; background: transparent;
+  border: 1px solid var(--border); color: var(--text);
+  font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.85rem;
+  border-radius: 3px; text-decoration: none; display: inline-block;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 5%;
+  display: flex; align-items: center; gap: 12px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+  color: var(--dim); letter-spacing: 1px; text-transform: uppercase;
+}
+.scroll-line { width: 40px; height: 1px; background: var(--dim); }
+
+/* TICKER */
+.ticker-wrap { padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; background: var(--bg2); }
+.ticker-track { display: flex; gap: 56px; width: max-content; animation: ticker 35s linear infinite; }
+.tick-item { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+.tick-dot { width: 3px; height: 3px; background: var(--teal); border-radius: 50%; opacity: 0.6; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* SECTIONS */
+section { padding: 110px 5%; }
+.section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); color: var(--white); line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 16px; }
+.section-sub { font-size: 0.97rem; color: var(--muted); max-width: 540px; line-height: 1.85; }
+
+/* SKILLS STRIP */
+.skills-strip { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.skills-inner { display: flex; flex-wrap: wrap; gap: 10px; }
+.skill-pill {
+  padding: 7px 16px; border: 1px solid var(--border);
+  border-radius: 2px; font-size: 0.73rem; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.3px;
+  transition: all 0.2s;
+}
+.skill-pill:hover { border-color: var(--teal); color: var(--teal); background: rgba(0,230,180,0.05); }
+.skill-pill.highlight { border-color: rgba(0,230,180,0.3); color: var(--teal); background: rgba(0,230,180,0.06); }
+
+/* PROJECTS */
+.projects-section { background: var(--bg); }
+.projects-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; flex-wrap: wrap; gap: 20px; }
+.projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.project-card {
+  background: var(--bg); padding: 36px 30px;
+  position: relative; overflow: hidden;
+  transition: background 0.3s;
+}
+.project-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--teal2));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.project-card:hover { background: var(--bg2); }
+.project-card:hover::before { transform: scaleX(1); }
+.proj-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--dim); letter-spacing: 1px; margin-bottom: 20px; }
+.proj-icon { font-size: 26px; margin-bottom: 16px; display: block; }
+.proj-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 2px;
+  font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.tag-teal { background: rgba(0,230,180,0.1); color: var(--teal); }
+.tag-blue { background: rgba(0,191,255,0.1); color: var(--teal2); }
+.tag-amber { background: rgba(245,166,35,0.1); color: var(--amber); }
+.tag-purple { background: rgba(167,139,250,0.1); color: var(--purple); }
+.tag-red { background: rgba(255,77,109,0.1); color: var(--red); }
+
+.proj-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--white); margin-bottom: 10px; line-height: 1.25; }
+.proj-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
+.proj-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.proj-tech { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; color: var(--dim); padding: 3px 8px; border: 1px solid var(--border); border-radius: 2px; }
+.proj-metric { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600; color: var(--teal); border-top: 1px solid var(--border); padding-top: 18px; }
+.proj-metric-icon { opacity: 0.7; }
+
+/* FEATURED PROJECT   FULL WIDTH */
+.project-card.featured {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center; padding: 56px 48px;
+}
+.feat-visual {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 32px; position: relative; overflow: hidden;
+  min-height: 240px; display: flex; flex-direction: column; justify-content: center;
+}
+.feat-terminal {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.73rem;
+  color: var(--muted); line-height: 2;
+}
+.feat-terminal .t-green { color: var(--teal); }
+.feat-terminal .t-amber { color: var(--amber); }
+.feat-terminal .t-dim { color: var(--dim); }
+.feat-terminal .t-cursor { display: inline-block; width: 8px; height: 13px; background: var(--teal); vertical-align: middle; animation: blink 1s infinite; }
+
+/* CLIENTS */
+.clients-section { background: var(--bg2); border-top: 1px solid var(--border); }
+.clients-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 52px; }
+.client-card {
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 30px 26px; position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.client-card:hover { border-color: var(--border-glow); transform: translateY(-4px); }
+.client-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--white); margin-bottom: 6px; }
+.client-logo em { font-style: italic; color: var(--teal); }
+.client-industry { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
+.client-detail { font-size: 0.84rem; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+.client-outcome { display: flex; flex-direction: column; gap: 7px; }
+.outcome-item { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; color: var(--text); }
+.outcome-item::before { content: '▸'; color: var(--teal); font-size: 0.7rem; flex-shrink: 0; }
+
+/* HOW I WORK */
+.process-section { background: var(--bg); }
+.process-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 56px; }
+.process-step { background: var(--bg); padding: 40px 28px; position: relative; }
+.step-num { font-family: 'IBM Plex Mono', monospace; font-size: 2.5rem; font-weight: 300; color: rgba(56,189,248,0.12); line-height: 1; margin-bottom: 24px; }
+.step-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); margin-bottom: 10px; }
+.step-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.75; }
+.step-arrow { position: absolute; top: 40px; right: -12px; z-index: 1; width: 24px; height: 24px; background: var(--bg2); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: var(--teal); }
+
+/* AUTONOMOUS AI SECTION */
+.autonomous-section {
+  background: var(--bg);
+  position: relative; overflow: hidden;
+}
+.autonomous-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(0,230,180,0.05) 0%, transparent 60%);
+}
+.auto-inner { position: relative; z-index: 1; }
+.auto-header { text-align: center; max-width: 640px; margin: 0 auto 64px; }
+.auto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.auto-card {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 32px 26px; border-radius: 2px; text-align: center;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s;
+}
+.auto-card:hover { border-color: var(--border-glow); }
+.auto-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+.auto-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--white); margin-bottom: 10px; }
+.auto-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.75; }
+
+/* METRICS BAND */
+.metrics-band { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.metrics-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+.metric-item {
+  padding: 48px 32px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.metric-item:last-child { border-right: none; }
+.metric-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--white); line-height: 1; }
+.metric-num span { color: var(--teal); }
+.metric-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 8px; }
+
+/* CONTACT */
+.contact-section {
+  background: var(--bg); border-top: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+.contact-section::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 100% 100%, rgba(0,191,255,0.06), transparent 55%);
+  pointer-events: none;
+}
+.contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; position: relative; z-index: 1; }
+.contact-tagline { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 2.5vw, 2.2rem); color: var(--white); line-height: 1.25; margin-bottom: 24px; }
+.contact-tagline em { font-style: italic; color: var(--teal); }
+.contact-body { font-size: 0.95rem; color: var(--muted); line-height: 1.85; margin-bottom: 32px; }
+.contact-links { display: flex; flex-direction: column; gap: 12px; }
+.contact-link {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border: 1px solid var(--border);
+  text-decoration: none; transition: all 0.2s;
+}
+.contact-link:hover { border-color: var(--border-glow); background: rgba(0,230,180,0.04); }
+.cl-icon { width: 36px; height: 36px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.cl-label { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+.cl-sub { font-size: 0.73rem; color: var(--dim); }
+
+/* FORM */
+.contact-form { display: flex; flex-direction: column; gap: 16px; }
+.form-row { display: flex; flex-direction: column; gap: 7px; }
+.form-row label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dim); }
+.form-row input, .form-row textarea, .form-row select {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 0.88rem;
+  color: var(--text); outline: none; border-radius: 2px;
+  transition: border-color 0.2s;
+}
+.form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: var(--border-glow); }
+.form-row textarea { min-height: 100px; resize: vertical; }
+.form-row input::placeholder, .form-row textarea::placeholder { color: var(--dim); }
+.form-submit {
+  padding: 14px; background: var(--teal); color: var(--bg);
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.85rem;
+  border: none; cursor: pointer; transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.form-submit:hover { background: #00d4a8; box-shadow: 0 0 30px rgba(0,230,180,0.3); }
+
+/* FOOTER */
+footer {
+  background: #03060a; padding: 36px 5%;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+  border-top: 1px solid var(--border);
+}
+.footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--dim); }
+.footer-copy { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: rgba(255,255,255,0.15); letter-spacing: 0.5px; }
+
+/* ANIMATIONS */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.revealed { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal-left.revealed { opacity: 1; transform: translateX(0); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .projects-grid { grid-template-columns: repeat(2, 1fr); }
+  .project-card.featured { grid-column: 1 / -1; grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: repeat(2, 1fr); }
+  .step-arrow { display: none; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .clients-grid, .auto-grid { grid-template-columns: 1fr; }
+  .metrics-inner { grid-template-columns: 1fr 1fr; }
+  .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+  .process-grid { grid-template-columns: 1fr; }
+  .projects-header { flex-direction: column; align-items: flex-start; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Krishna <em>Paruchuri</em></a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#clients">Clients</a></li>
+    <li><a href="#autonomous">AI Agents</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge reveal"><span class="blink"></span> AI Solutions Studio</div>
+    <h1 class="reveal">Building <em>Autonomous</em><br>AI Businesses</h1>
+    <div class="hero-mono reveal">// Salesforce · Agentforce · LangChain · RAG · MuleSoft · Azure</div>
+    <p class="hero-sub reveal">I help companies deploy intelligent AI agents that run autonomously, automate critical workflows, and deliver measurable business outcomes   without adding headcount.</p>
+    <div class="hero-actions reveal">
+      <a href="#projects" class="btn-primary">Explore Projects</a>
+      <a href="#contact" class="btn-outline">Start a Project</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="tick-item"><span class="tick-dot"></span>Agentforce</span>
+    <span class="tick-item"><span class="tick-dot"></span>Einstein AI</span>
+    <span class="tick-item"><span class="tick-dot"></span>LangChain</span>
+    <span class="tick-item"><span class="tick-dot"></span>RAG Pipelines</span>
+    <span class="tick-item"><span class="tick-dot"></span>GPT-4o</span>
+    <span class="tick-item"><span class="tick-dot"></span>MuleSoft</span>
+    <span class="tick-item"><span class="tick-dot"></span>Azure AI</span>
+    <span class="tick-item"><span class="tick-dot"></span>Salesforce Data Cloud</span>
+    <span class="tick-item"><span class="tick-dot"></span>Autonomous Agents</span>
+    <span class="tick-item"><span class="tick-dot"></span>Apex / LWC</span>
+    <span class="tick-item"><span class="tick-dot"></span>CI/CD · Copado</span>
+    <span class="tick-item"><span class="tick-dot"></span>PMP Certified</span>
+    <span class="tick-item"><span class="tick-dot"></span>TensorFlow</span>
+    <span class="tick-item"><span class="tick-dot"></span>Kafka</span>
+    <span class="tick-item"><span class="tick-dot"></span>Agentforce</span>
+    <span class="tick-item"><span class="tick-dot"></span>Einstein AI</span>
+    <span class="tick-item"><span class="tick-dot"></span>LangChain</span>
+    <span class="tick-item"><span class="tick-dot"></span>RAG Pipelines</span>
+    <span class="tick-item"><span class="tick-dot"></span>GPT-4o</span>
+    <span class="tick-item"><span class="tick-dot"></span>MuleSoft</span>
+    <span class="tick-item"><span class="tick-dot"></span>Azure AI</span>
+    <span class="tick-item"><span class="tick-dot"></span>Salesforce Data Cloud</span>
+    <span class="tick-item"><span class="tick-dot"></span>Autonomous Agents</span>
+    <span class="tick-item"><span class="tick-dot"></span>Apex / LWC</span>
+    <span class="tick-item"><span class="tick-dot"></span>CI/CD · Copado</span>
+    <span class="tick-item"><span class="tick-dot"></span>PMP Certified</span>
+    <span class="tick-item"><span class="tick-dot"></span>TensorFlow</span>
+    <span class="tick-item"><span class="tick-dot"></span>Kafka</span>
+  </div>
+</div>
+
+<!-- SKILLS STRIP -->
+<section class="skills-strip" style="padding: 48px 5%;">
+  <div class="section-label reveal">Technical Stack</div>
+  <div class="skills-inner reveal" style="margin-top:20px;">
+    <span class="skill-pill highlight">Salesforce Agentforce</span>
+    <span class="skill-pill highlight">Einstein Copilot</span>
+    <span class="skill-pill highlight">LangChain</span>
+    <span class="skill-pill">Salesforce Data Cloud</span>
+    <span class="skill-pill">Sales Cloud</span>
+    <span class="skill-pill">Service Cloud</span>
+    <span class="skill-pill">Experience Cloud</span>
+    <span class="skill-pill">Government Cloud</span>
+    <span class="skill-pill highlight">RAG Pipelines</span>
+    <span class="skill-pill">GPT-4o / Claude</span>
+    <span class="skill-pill">TensorFlow</span>
+    <span class="skill-pill">MuleSoft / REST APIs</span>
+    <span class="skill-pill">Azure Functions</span>
+    <span class="skill-pill">Kafka</span>
+    <span class="skill-pill">Apex / LWC</span>
+    <span class="skill-pill">Salesforce DX</span>
+    <span class="skill-pill">GitHub CI/CD</span>
+    <span class="skill-pill">Copado</span>
+    <span class="skill-pill">Datadog APM</span>
+    <span class="skill-pill">Zuora</span>
+    <span class="skill-pill">ServiceNow</span>
+    <span class="skill-pill">Workday</span>
+    <span class="skill-pill">OKTA</span>
+    <span class="skill-pill">Agile / Scrum / Jira</span>
+  </div>
+</section>
+
+
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projects">
+  <div class="projects-header">
+    <div>
+      <div class="section-label reveal">AI Solutions Portfolio</div>
+      <h2 class="section-title reveal">Projects that <em style="font-style:italic;color:var(--teal)">run themselves</em></h2>
+    </div>
+    <p class="section-sub reveal" style="max-width:360px; font-size:0.88rem;">Small-scale to enterprise. Each project automates decisions, eliminates manual work, and compounds value over time.</p>
+  </div>
+
+  <div class="projects-grid">
+
+    <!-- FEATURED -->
+    <div class="project-card featured reveal">
+      <div>
+        <div class="proj-num">00   FLAGSHIP</div>
+        <span class="proj-tag tag-teal">Autonomous AI Agent</span>
+        <h2 class="proj-title" style="font-size:1.8rem;">PDF Funding   AI Loan Processing Agent</h2>
+        <p class="proj-desc">Built a fully autonomous loan intake and decisioning agent for PDF Funding that reads incoming loan applications, extracts key data fields via RAG, runs credit rule logic through a Salesforce Agentforce flow, and sends conditional approval/rejection communications   all without human involvement. Processing time dropped from 3 days to under 4 minutes.</p>
+        <div class="proj-stack">
+          <span class="proj-tech">Agentforce</span>
+          <span class="proj-tech">RAG Pipeline</span>
+          <span class="proj-tech">LangChain</span>
+          <span class="proj-tech">Salesforce Data Cloud</span>
+          <span class="proj-tech">MuleSoft API</span>
+          <span class="proj-tech">GPT-4o</span>
+        </div>
+        <div class="proj-metric"><span class="proj-metric-icon">⚡</span> 97% reduction in manual processing time · Autonomous decision-making at scale</div>
+      </div>
+      <div class="feat-visual">
+        <div class="feat-terminal">
+          <div><span class="t-dim">$</span> <span class="t-green">agent.run</span>(<span class="t-amber">"process_loan_app"</span>)</div>
+          <div class="t-dim">────────────────────────────────</div>
+          <div><span class="t-green">✓</span> Ingesting application PDF...</div>
+          <div><span class="t-green">✓</span> Extracting 47 data fields via RAG</div>
+          <div><span class="t-green">✓</span> Running credit decision model</div>
+          <div><span class="t-green">✓</span> Score: <span class="t-amber">742</span>   Eligible</div>
+          <div><span class="t-green">✓</span> Sending approval notification</div>
+          <div><span class="t-green">✓</span> Updating Salesforce CRM record</div>
+          <div class="t-dim">────────────────────────────────</div>
+          <div><span class="t-green">Status:</span> <span class="t-amber">All tasks complete</span>  <span class="t-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 1 -->
+    <div class="project-card reveal">
+      <div class="proj-num">01</div>
+      <span class="proj-icon">🎵</span>
+      <span class="proj-tag tag-blue">CRM Automation</span>
+      <h3 class="proj-title">Custom Sounds   AI Sales Intelligence Platform</h3>
+      <p class="proj-desc">Deployed an Einstein AI-powered sales intelligence layer for Custom Sounds that automatically scores leads, surfaces next-best actions, and routes inbound inquiries to the right rep   increasing conversion rates by 34%.</p>
+      <div class="proj-stack">
+        <span class="proj-tech">Einstein AI</span>
+        <span class="proj-tech">Sales Cloud</span>
+        <span class="proj-tech">LWC</span>
+        <span class="proj-tech">Apex</span>
+      </div>
+      <div class="proj-metric"><span class="proj-metric-icon">📈</span> 34% uplift in lead conversion</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- PROJECT 8 -->
+    <div class="project-card reveal">
+      <div class="proj-num">08</div>
+      <span class="proj-icon">💼</span>
+      <span class="proj-tag tag-amber">SMB Automation</span>
+      <h3 class="proj-title">Autonomous Business Operations Kit</h3>
+      <p class="proj-desc">A turnkey AI operations package for small businesses   includes AI email triage, auto-invoicing, lead follow-up sequences, and a Salesforce Starter org configured to run with minimal oversight. Deployed for 5+ local businesses.</p>
+      <div class="proj-stack">
+        <span class="proj-tech">Salesforce Starter</span>
+        <span class="proj-tech">Einstein</span>
+        <span class="proj-tech">Flow Builder</span>
+        <span class="proj-tech">GPT-4o</span>
+      </div>
+      <div class="proj-metric"><span class="proj-metric-icon">🚀</span> 15hrs/week saved per business · Avg 2-week deploy</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="clients-section" id="clients">
+  <div class="section-label reveal">Client Engagements</div>
+  <h2 class="section-title reveal">Companies I've <em style="font-style:italic;color:var(--teal)">transformed</em></h2>
+  <p class="section-sub reveal">From fintech startups to enterprise government programs   delivering AI and Salesforce solutions that move the needle.</p>
+
+  <div class="clients-grid">
+    <div class="client-card reveal">
+      <div class="client-logo">PDF <em>Funding</em></div>
+      <div class="client-industry">Fintech · Lending</div>
+      <p class="client-detail">Autonomous loan processing pipeline built on Agentforce and RAG   from application intake to decisioning in minutes, not days.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">AI agent handles 100% of Tier-1 loan intakes</div>
+        <div class="outcome-item">97% faster processing vs manual review</div>
+        <div class="outcome-item">Salesforce Data Cloud integration for credit decisioning</div>
+      </div>
+    </div>
+    <div class="client-card reveal">
+      <div class="client-logo">Custom <em>Sounds</em></div>
+      <div class="client-industry">Retail · Audio & Electronics</div>
+      <p class="client-detail">Einstein AI sales intelligence + CRM automation suite driving smarter lead management and higher close rates for the audio retailer.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">Einstein-powered lead scoring and routing</div>
+        <div class="outcome-item">34% improvement in sales conversion</div>
+        <div class="outcome-item">Full Sales Cloud implementation + automation flows</div>
+      </div>
+    </div>
+    <div class="client-card reveal">
+      <div class="client-logo">Enterprise <em>Gov</em></div>
+      <div class="client-industry">Government · Public Sector</div>
+      <p class="client-detail">Multi-year $28M Salesforce Government Cloud transformation with AI-assisted compliance, case management, and document automation.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">$250M+ in operational savings across programs</div>
+        <div class="outcome-item">Salesforce Gov Cloud + AI compliance automation</div>
+        <div class="outcome-item">12-FTE manual process fully automated</div>
+      </div>
+    </div>
+    <div class="client-card reveal">
+      <div class="client-logo">Travel <em>Enterprise</em></div>
+      <div class="client-industry">Travel & Hospitality</div>
+      <p class="client-detail">AI concierge agents and Experience Cloud portals enabling self-service booking management and proactive disruption handling at scale.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">80% self-service resolution rate</div>
+        <div class="outcome-item">+28 point CSAT improvement</div>
+        <div class="outcome-item">Agentforce + LangChain concierge system</div>
+      </div>
+    </div>
+    <div class="client-card reveal">
+      <div class="client-logo">Health <em>Systems</em></div>
+      <div class="client-industry">Healthcare</div>
+      <p class="client-detail">Patient journey AI on Salesforce Health Cloud   automated care coordination, risk flagging, and engagement workflows across the care continuum.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">41% better care plan adherence</div>
+        <div class="outcome-item">AI-powered high-risk patient flagging</div>
+        <div class="outcome-item">Salesforce Health Cloud + Einstein Copilot</div>
+      </div>
+    </div>
+    <div class="client-card reveal">
+      <div class="client-logo">SMB <em>Suite</em></div>
+      <div class="client-industry">Small Business</div>
+      <p class="client-detail">Packaged AI operations kit giving small businesses enterprise-grade automation: intelligent email handling, auto-invoicing, and Salesforce-powered customer management.</p>
+      <div class="client-outcome">
+        <div class="outcome-item">15+ hours/week reclaimed per business</div>
+        <div class="outcome-item">Deployed in under 2 weeks</div>
+        <div class="outcome-item">Ongoing AI agent monitoring & optimization</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUTONOMOUS AI -->
+<section class="autonomous-section" id="autonomous">
+  <div class="auto-inner">
+    <div class="auto-header reveal">
+      <div class="section-label">The Core Thesis</div>
+      <h2 class="section-title">Your business should run<br><em style="font-style:italic;color:var(--teal)">while you sleep</em></h2>
+      <p class="section-sub" style="margin: 0 auto; text-align:center;">I build AI agent systems that take over repetitive decisions, surface insights automatically, and operate continuously   turning your Salesforce org into an autonomous revenue machine.</p>
+    </div>
+    <div class="auto-grid">
+      <div class="auto-card reveal">
+        <span class="auto-icon">🧠</span>
+        <h3 class="auto-title">AI Agent Design</h3>
+        <p class="auto-desc">Architect multi-agent systems using Agentforce, LangChain, and RAG that reason, decide, and act   without waiting for a human to press go.</p>
+      </div>
+      <div class="auto-card reveal">
+        <span class="auto-icon">🔄</span>
+        <h3 class="auto-title">Workflow Automation</h3>
+        <p class="auto-desc">Eliminate manual processes across sales, support, operations, and compliance using intelligent Salesforce Flow, Apex triggers, and event-driven architecture.</p>
+      </div>
+      <div class="auto-card reveal">
+        <span class="auto-icon">📡</span>
+        <h3 class="auto-title">Real-Time Intelligence</h3>
+        <p class="auto-desc">Connect your data streams via Kafka and MuleSoft to surface anomalies, opportunities, and risks in real time   and act on them automatically.</p>
+      </div>
+      <div class="auto-card reveal">
+        <span class="auto-icon">📈</span>
+        <h3 class="auto-title">Revenue Amplification</h3>
+        <p class="auto-desc">Einstein AI scoring, predictive analytics, and automated outreach sequences that prioritize the right accounts and actions   every hour of the day.</p>
+      </div>
+      <div class="auto-card reveal">
+        <span class="auto-icon">🛡️</span>
+        <h3 class="auto-title">Autonomous Compliance</h3>
+        <p class="auto-desc">AI-powered document generation, audit trail maintenance, and approval routing that keeps your business compliant without a compliance team touching each record.</p>
+      </div>
+      <div class="auto-card reveal">
+        <span class="auto-icon">🚀</span>
+        <h3 class="auto-title">Deploy & Scale</h3>
+        <p class="auto-desc">Production-ready deployment via Copado CI/CD, Datadog monitoring, and Azure infrastructure   with full observability so your agents stay healthy at scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-label reveal">How I Work</div>
+  <h2 class="section-title reveal">From idea to autonomous in <em style="font-style:italic;color:var(--teal)">4 steps</em></h2>
+  <div class="process-grid">
+    <div class="process-step reveal">
+      <div class="step-num">01</div>
+      <h3 class="step-title">Discovery & Architecture</h3>
+      <p class="step-desc">I map your current workflows, identify automation opportunities, and design a Salesforce + AI architecture blueprint tailored to your business model.</p>
+      <div class="step-arrow">→</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">02</div>
+      <h3 class="step-title">Agent & Integration Build</h3>
+      <p class="step-desc">Build your AI agents, configure Agentforce flows, wire up MuleSoft integrations, and connect your data sources   all in a sprint-based delivery model.</p>
+      <div class="step-arrow">→</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">03</div>
+      <h3 class="step-title">Test & Deploy</h3>
+      <p class="step-desc">Rigorous Apex testing, CI/CD via Copado, and Datadog APM setup ensures your autonomous systems go live with confidence and full observability.</p>
+      <div class="step-arrow">→</div>
+    </div>
+    <div class="process-step reveal">
+      <div class="step-num">04</div>
+      <h3 class="step-title">Optimize & Scale</h3>
+      <p class="step-desc">Ongoing agent tuning, performance monitoring, and feature expansion   so your AI business compounds value month after month without rebuilding from scratch.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="reveal-left">
+      <div class="section-label">Let's Build</div>
+      <h2 class="contact-tagline">Ready to run your business on <em>autopilot?</em></h2>
+      <p class="contact-body">Whether you need a single AI agent or a full autonomous business stack   I scope, build, and deliver. No long contracts, no ambiguity. Just results.</p>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:krishna.paruchuri@parmik.com">
+          <div class="cl-icon">✉️</div>
+          <div>
+            <div class="cl-label">krishna.paruchuri@parmik.com</div>
+            <div class="cl-sub">Best for project inquiries</div>
+          </div>
+        </a>
+        <a class="contact-link" href="tel:6824459394">
+          <div class="cl-icon">📞</div>
+          <div>
+            <div class="cl-label">682.445.9394</div>
+            <div class="cl-sub">Available Mon–Fri</div>
+          </div>
+        </a>
+        <a class="contact-link" href="https://www.linkedin.com/in/paruchurikrishna6567/" target="_blank">
+          <div class="cl-icon">💼</div>
+          <div>
+            <div class="cl-label">LinkedIn Profile</div>
+            <div class="cl-sub">Connect professionally</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="contact-form">
+        <div class="form-row">
+          <label>Your Name</label>
+          <input type="text" placeholder="Jane Smith"/>
+        </div>
+        <div class="form-row">
+          <label>Company</label>
+          <input type="text" placeholder="Acme Corp"/>
+        </div>
+        <div class="form-row">
+          <label>Project Type</label>
+          <select>
+            <option value="">Select a solution type...</option>
+            <option>AI Agent / Autonomous Workflow</option>
+            <option>Salesforce Implementation</option>
+            <option>CRM Optimization & Einstein AI</option>
+            <option>Data Cloud & RAG Pipeline</option>
+            <option>MuleSoft / API Integration</option>
+            <option>SMB Automation Kit</option>
+            <option>Enterprise Program Delivery</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Tell me about your project</label>
+          <textarea placeholder="What processes do you want to automate? What's your current Salesforce setup?"></textarea>
+        </div>
+        <button class="form-submit" onclick="alert('Thanks! Krishna will be in touch within 24 hours.')">Send Project Brief →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Krishna Paruchuri · AI Solutions Studio</div>
+  <div class="footer-copy">© 2025 · Salesforce Product or Program Manager · Agentforce Specialist · PMP®</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+function animRing() { rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animRing); }
+animRing();
+document.querySelectorAll('a, button, .project-card, .client-card, .auto-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='56px'; ring.style.height='56px'; ring.style.borderColor='rgba(0,230,180,0.7)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='36px'; ring.style.height='36px'; ring.style.borderColor='rgba(0,230,180,0.5)'; });
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('revealed'); obs.unobserve(e.target); }});
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal, .reveal-left').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
